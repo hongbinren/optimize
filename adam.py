@@ -1,6 +1,6 @@
 import numpy as np 
 from scipy.optimize import OptimizeResult
-from utils import _status_message, vecnorm, wrap_function
+from .utils import _status_message, vecnorm, wrap_function
 
 
 

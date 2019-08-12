@@ -1,7 +1,7 @@
 import numpy as np
 from inspect import isgenerator
 from scipy.optimize import OptimizeResult 
-from utils import _status_message, vecnorm, wrap_function
+from .utils import _status_message, vecnorm, wrap_function
 
 
 def minimize_gd(fun, x1, args=(), jac=None, momentum=0.95, lr=0.0001,
