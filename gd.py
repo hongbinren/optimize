@@ -1,6 +1,6 @@
 import numpy as np
 from inspect import isgenerator
-from scipy.optimize import OptimizeResult 
+from scipy.optimize import OptimizeResult
 from .utils import _status_message, vecnorm, wrap_function
 
 
@@ -26,9 +26,9 @@ def minimize_gd(fun, x1, args=(), jac=None, momentum=0.95, lr=0.0001,
     k = 1
     gfk = myfprime(x1)
     if isgenerator(lr_):
-        vk = next(lr_) * gfk
+        vk = -1 * next(lr_) * gfk
     else:
-        vk = lr_ * gfk
+        vk = -1 * lr_ * gfk
     gnormk = vecnorm(gfk, ord=norm)
     warnflag = 0
 
@@ -38,29 +38,29 @@ def minimize_gd(fun, x1, args=(), jac=None, momentum=0.95, lr=0.0001,
         if not np.isfinite(old_fval):
             warnflag = 2
             break
-        xk = xk - vk
+        xk = xk + vk
         gfk = myfprime(xk)
         gnormk = vecnorm(gfk)
         if (gnormk <= gtol):
             break
         k += 1
         if nesterov:
-            _gfk_ahead = myfprime(xk - momentum * vk)
+            _gfk_ahead = myfprime(xk + momentum * vk)
             if isgenerator(lr_):
-                vk = momentum * vk + next(lr_) * _gfk_ahead
+                vk = momentum * vk - next(lr_) * _gfk_ahead
             else:
-                vk = momentum * vk + lr_ * _gfk_ahead
+                vk = momentum * vk - lr_ * _gfk_ahead
         else:
             if isgenerator(lr_):
-                vk = momentum * vk + next(lr_) * gfk
+                vk = momentum * vk - next(lr_) * gfk
             else:
-                vk = momentum * vk + lr_ * gfk
+                vk = momentum * vk - lr_ * gfk
         old_fval = f(xk)
         if callback is not None:
             callback(xk)
 
     fval = old_fval
-    
+
     if warnflag == 2:
         msg = _status_message['pr_loss']
     elif k >= maxiter:
